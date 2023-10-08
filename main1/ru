@@ -1,0 +1,498 @@
+#pgzero
+import random
+
+WIDTH = 1080
+HEIGHT = 470
+
+TITLE = "War Tanks"
+FPS = 30
+
+# Объекты и переменные
+char = Actor("tanksvoi5", (300, 400))
+char.health = 100
+fon = Actor("fon menu")
+fonn = random.choice([Actor("фон"), Actor("fon1"), Actor("fon3")])
+meteors = []
+enemies = []
+bullets = []
+mode = 'menu'
+fon_glav_menu = Actor('fon_glav_menu')
+baza = Actor("baza", (1000,300))
+baza2 = Actor("baza", (1000,100))
+space = Actor("3", (540, 250))
+win = Actor("win", (540, 250))
+lose = Actor("lose", (540,250))
+count = 0
+# кнопки для переключения
+knopka = Actor("knopka", (540,200))
+knopka3 = Actor("knopka", (540,100))
+knopka2 = Actor("knopka", (540,300))
+knopka4 = Actor("knopka", (540,200))
+knopka5 = Actor("knopka", (540,300))
+knopka6 = Actor("knopka", (300,250))
+knopka7 = Actor("knopka", (500,250))
+knopka8 = Actor("knopka", (700,250))
+knopka9 = Actor("knopka", (500,350))
+knopka10 = Actor("knopka", (550,10))
+knopka11 = Actor("knopka", (540,400))
+knopka12 = Actor("knopka", (540,400))
+# танки
+type1 = Actor("tanksvoi", (300, 250))
+type2 = Actor("tanksvoi2", (500, 250))
+type3 = Actor("tanksvoi3", (700, 250))
+type4 = Actor("tanksvoi4", (400, 350))
+type5 = Actor("tanksvoi5", (600, 350))
+
+
+# Заполнение списка врагов
+for i in range(5):
+    x = random.randint(0, 600)
+    y = random.randint(-450, -50)
+    enemy = Actor("tank4", (x, y))
+    enemy.speed = random.randint(2, 6)
+    enemies.append(enemy)
+    
+# Заполнение списка метеоритов
+for i in range(3):
+    x = random.randint(0, 600)
+    y = random.randint(-450, -50)
+    meteor = Actor("bomba", (x, y))
+    meteor.speed = random.randint(2, 6)
+    meteors.append(meteor)
+
+    
+# Отрисовка
+def draw():
+    global count
+    # Режим меню
+    if mode == "menu":
+        fon_glav_menu.draw()
+        screen.draw.text('WAR TANKS', center = (540, 100), color = "black", fontsize = 54)
+        knopka.draw()
+        screen.draw.text('ИГРАТЬ', center = (540, 200), color = "black", fontsize = 36)
+        knopka2.draw()
+        screen.draw.text('СКИНЫ', center = (540, 300), color = "black", fontsize = 36)
+        knopka11.draw()
+        screen.draw.text('ПОМОЩЬ', center = (540, 400), color = "black", fontsize = 36)
+    # Режим меню помощи
+    if mode == "menu_pomosh":
+        fon_glav_menu.draw()
+        screen.draw.text('WAR TANKS', center = (540, 50), color = "black", fontsize = 54)
+        knopka12.draw()
+        screen.draw.text('НАЗАД', center = (540, 400), color = "black", fontsize = 36)
+        screen.draw.text('Приветствую тебя  в разделе помощь', center = (540, 90), color = "black", fontsize = 20)
+        screen.draw.text('1 Цель игры.', center = (540, 110), color = "black", fontsize = 20)
+        screen.draw.text('Твоя проста цель довольна проста убить как можно больше танков', center = (540, 130), color = "black", fontsize = 20)
+        screen.draw.text('и не дать им проехать дальше, если они проедут дальше или столкнуться с тобой ты умрешь.', center = (540, 150), color = "black", fontsize = 20)
+        screen.draw.text('2 Уровни игры.', center = (540, 170), color = "black", fontsize = 20)
+        screen.draw.text('1 лвл - здесь все просто, убить наибольшее количество танков и не дать им проехать дальше.', center = (540, 190), color = "black", fontsize = 20)
+        screen.draw.text('2 лвл - тут как и в первом, НО появлятся база которую нужно защищать. ', center = (450, 210), color = "black", fontsize = 20)
+        screen.draw.text('3 лвл - тут появляется сразу две базы. ', center = (280, 230), color = "black", fontsize = 20)
+        screen.draw.text('3 Бонус.', center = (540, 250), color = "black", fontsize = 20)
+        screen.draw.text('Заходя после 1 боя во второй могут остаться старые пули которые также убивают врагов', center = (540, 270), color = "black", fontsize = 20)
+        screen.draw.text('4 Новые идеи.', center = (540, 290), color = "black", fontsize = 20)
+        screen.draw.text('Пишите в дс: markus_qwezxc.', center = (540, 310), color = "black", fontsize = 20)
+    # Режим выбора танка лвл 1
+    if mode == 'menu_rexim':
+        fon.draw()
+        screen.draw.text('Выберите уровень', center = (540, 100), color = "black", fontsize = 54)
+        knopka6.draw()
+        screen.draw.text('ЛВЛ 1', center = (300,250), color = "black", fontsize = 36)
+        knopka7.draw()
+        screen.draw.text('ЛВЛ 2', center = (500,250), color = "black", fontsize = 36)
+        knopka8.draw()
+        screen.draw.text('ЛВЛ 3', center = (700, 250), color = "black", fontsize = 36)
+        knopka9.draw()
+        screen.draw.text('НАЗАД', center = (500, 350), color = "black", fontsize = 36)
+    # Режим выбора танка лвл 1
+    if mode == 'menu_game':
+        fon.draw()
+        screen.draw.text('Выберите танк', center = (540, 100), color = "black", fontsize = 54)
+        type1.draw()
+        type2.draw()
+        type3.draw()
+        type4.draw()
+        type5.draw()
+    # Режим выбора танка лвл 2
+    if mode == 'menu_game_2':
+        fon.draw()
+        screen.draw.text('Выберите танк', center = (540, 100), color = "black", fontsize = 54)
+        type1.draw()
+        type2.draw()
+        type3.draw()
+        type4.draw()
+        type5.draw()
+    # Режим выбора танка лвл 1
+    if mode == 'menu_game_3':
+        fon.draw()
+        screen.draw.text('Выберите танк', center = (540, 100), color = "black", fontsize = 54)
+        type1.draw()
+        type2.draw()
+        type3.draw()
+        type4.draw()
+        type5.draw()
+    # Режим скинов
+    elif mode == "gallery":
+        screen.fill("#2f3542")
+        knopka3.draw()
+        screen.draw.text('Назад', center = (540, 100), color = "black", fontsize = 36)
+        type1.draw()
+        type2.draw()
+        type3.draw()
+        type4.draw()
+        type5.draw()
+    # Режим игры лвл1
+    if mode == 'game':
+        fonn.draw()
+        #Отрисовка счета
+        screen.draw.text(count, pos=(10, 10), color="white", fontsize = 24)
+        knopka10.draw()
+        screen.draw.text('МЕНЮ', pos=(500, 10), color="black", fontsize = 24)
+        
+        # Отрисовка метеоритов
+        for i in range(len(meteors)):
+            meteors[i].draw()
+        char.draw()
+        # Отрисовка врагов
+        for i in range(len(enemies)):
+            enemies[i].draw()
+        #Отрисовка пуль
+        for i in range(len(bullets)):
+            bullets[i].draw()
+    # Режим игры лвл2        
+    if mode == 'level_2':
+        fonn.draw()
+        baza.draw()
+        screen.draw.text(count, pos=(10, 10), color="white", fontsize = 24)
+        knopka10.draw()
+        screen.draw.text('МЕНЮ', pos=(500, 10), color="black", fontsize = 24)
+        
+        # Отрисовка метеоритов
+        for i in range(len(meteors)):
+            meteors[i].draw()
+        char.draw()
+        # Отрисовка врагов
+        for i in range(len(enemies)):
+            enemies[i].draw()
+        #Отрисовка пуль
+        for i in range(len(bullets)):
+            bullets[i].draw()
+    # Режим игры лвл3
+    if mode == 'level_3':
+        fonn.draw()
+        baza.draw()
+        baza2.draw()
+        screen.draw.text(count, pos=(10, 10), color="white", fontsize = 24)
+        knopka10.draw()
+        screen.draw.text('МЕНЮ', pos=(500, 10), color="black", fontsize = 24)
+        
+        # Отрисовка метеоритов
+        for i in range(len(meteors)):
+            meteors[i].draw()
+        char.draw()
+        # Отрисовка врагов
+        for i in range(len(enemies)):
+            enemies[i].draw()
+        #Отрисовка пуль
+        for i in range(len(bullets)):
+            bullets[i].draw()
+    # Окно проигрыша
+    elif mode == 'end':
+        
+       
+        if count < 9:
+            space.draw()
+            lose.draw()
+            screen.draw.text("Можно но было лучше", center = (540, 200), color = "white", fontsize = 48)
+            #Итоговый счет
+            screen.draw.text(count, center = (540, 250), color = "white", fontsize = 26)
+            screen.draw.text('Нажмите Enter', center = (540, 275), color = "white", fontsize = 26)
+            screen.draw.text('для возвращения в меню', center = (540, 300), color = "white", fontsize = 26)
+        # счет очков и выбор текста 
+        elif count > 10 and count < 20:
+            space.draw()
+            lose.draw()
+            screen.draw.text("Неплохо", center = (540, 200), color = "white", fontsize = 48)
+            #Итоговый счет
+            screen.draw.text(count, center = (540,250), color = "white", fontsize = 26)
+            screen.draw.text('Нажмите Enter', center = (540, 275), color = "white", fontsize = 26)
+            screen.draw.text('для возвращения в меню', center = (540, 300), color = "white", fontsize = 26)
+        elif count > 20 and count < 29:
+            space.draw()
+            lose.draw()
+            screen.draw.text("Класс!", center = (540, 200), color = "white", fontsize = 48)
+            #Итоговый счет
+            screen.draw.text(count, center = (540, 250), color = "white", fontsize = 26)
+            screen.draw.text('Нажмите Enter', center = (540, 275), color = "white", fontsize = 26)
+            screen.draw.text('для возвращения в меню', center = (540, 300), color = "white", fontsize = 26)
+        elif count > 30 and count < 49:
+            space.draw()
+            win.draw()
+            screen.draw.text("Молодец!", center = (540, 200), color = "white", fontsize = 48)
+            #Итоговый счет
+            screen.draw.text(count, center = (540, 250), color = "white", fontsize = 26)
+            screen.draw.text('Нажмите Enter', center = (540, 275), color = "white", fontsize = 26)
+            screen.draw.text('для возвращения в меню', center = (540, 300), color = "white", fontsize = 26)
+        elif count > 50 and count < 99:
+            space.draw()
+            win.draw()
+            screen.draw.text("Да это же лучший танкист!", center = (540, 200), color = "white", fontsize = 48)
+            #Итоговый счет
+            screen.draw.text(count, center = (540, 250), color = "white", fontsize = 26)
+            screen.draw.text('Нажмите Enter', center = (540, 275), color = "white", fontsize = 26)
+            screen.draw.text('для возвращения в меню', center = (540, 300), color = "white", fontsize = 26)
+        elif count > 100 and count < 199:
+            space.draw()
+            win.draw()
+            screen.draw.text("You Crazyyyy!", center = (540, 200), color = "white", fontsize = 48)
+            #Итоговый счет
+            screen.draw.text(count, center = (540, 250), color = "white", fontsize = 26)
+            screen.draw.text('Нажмите Enter', center = (540, 275), color = "white", fontsize = 26)
+            screen.draw.text('для возвращения в меню', center = (540, 300), color = "white", fontsize = 26)
+        elif count > 200:
+            space.draw()
+            win.draw()
+            screen.draw.text("ЭТО РЕКОРД МИРА!", center = (540, 200), color = "white", fontsize = 48)
+            #Итоговый счет
+            screen.draw.text(count, center = (540, 250), color = "white", fontsize = 26)
+            screen.draw.text('Нажмите Enter', center = (540, 275), color = "white", fontsize = 26)
+            screen.draw.text('для возвращения в меню', center = (540, 300), color = "white", fontsize = 26)
+# Управление
+def on_mouse_move(pos):
+    char.pos = pos
+# Добавление в список нового врага
+def new_enemy():
+    y = random.randint(0, 400)
+    x = -50
+    enemy = Actor("tank2", (x, y))
+    enemy.speed = random.randint(2, 20)
+    enemies.append(enemy)
+
+# Движение врагов
+def enemy_char():
+    for i in range(len(enemies)):
+        if enemies[i].x < 1080:
+            enemies[i].x = enemies[i].x + enemies[i].speed
+        else:
+            enemies.pop(i)
+            new_enemy()
+
+
+# Движение метеоритов
+def meteorites():
+    for i in range(len(meteors)):
+        if meteors[i].y < 450:
+            meteors[i].y = meteors[i].y + meteors[i].speed
+        else:
+            meteors[i].x = random.randint(0, 600)
+            meteors[i].y = -20
+            meteors[i].speed = random.randint(2, 10)
+
+
+# Столкновения
+def collisions():
+    global mode
+    global count
+    for i in range(len(enemies)):
+        if char.colliderect(enemies[i]):
+            mode = "end"
+        #Столкновение с пуями
+        for j in range(len(bullets)):
+            if bullets[j].colliderect(enemies[i]):
+                count+=1
+                enemies.pop(i)
+                bullets.pop(j)
+                new_enemy()
+                break
+    # столкновение с базами
+    for i in range(len(enemies)):
+        if baza.colliderect(enemies[i]):
+            mode = "end"
+    for i in range(len(enemies)):
+        if baza2.colliderect(enemies[i]):
+            mode = "end"
+        
+# новый враг
+def fill():
+    for i in range(5):
+        x = random.randint(0, 600)
+        y = random.randint(-450, -50)
+        enemy = Actor("tank4", (x, y))
+        enemy.speed = random.randint(2, 8)
+        enemies.append(enemy)
+    
+    # Заполнение списка метеоритов
+    for i in range(5):
+        x = random.randint(0, 600)
+        y = random.randint(-450, -50)
+        meteor = Actor("bomba", (x, y))
+        meteor.speed = random.randint(2, 10)
+        meteors.append(meteor)
+
+
+def update(dt):
+    global mode, count, meteors, enemies
+    # Режим игры лвл1
+    if mode == 'game':
+        enemy_char()
+        collisions()
+        meteorites()
+        # Движение пуль
+        for i in range(len(bullets)):
+            if bullets[i].x < 0:
+                bullets.pop(i)
+                break
+            else:
+                bullets[i].x = bullets[i].x - 20
+    # Режим игры лвл2
+    if mode == 'level_2':
+    
+        enemy_char()
+        collisions()
+        meteorites()
+        # Движение пуль
+        for i in range(len(bullets)):
+            if bullets[i].x < 0:
+                bullets.pop(i)
+                break
+            else:
+                bullets[i].x = bullets[i].x - 20
+    # Режим игры лвл1
+    if mode == 'level_3':
+        enemy_char()
+        collisions()
+        meteorites()
+        # Движение пуль
+        for i in range(len(bullets)):
+            if bullets[i].x < 0:
+                bullets.pop(i)
+                break
+            else:
+                bullets[i].x = bullets[i].x - 20
+    # Режим конец
+    elif mode  == 'end' and keyboard.enter:
+        count = 0
+        meteors = []
+        enemies = []
+        mode = 'menu'
+        fill()
+#Функция обработки кликов
+def on_mouse_down(button, pos):
+    global mode
+    # лвл 1
+    if mode == 'menu_game' and type1.collidepoint(pos):
+        char.image = "tanksvoi"
+        mode = 'game'
+    elif mode == 'menu_game' and type2.collidepoint(pos):
+        char.image = "tanksvoi2"
+        mode = 'game'
+    elif mode == 'menu_game' and type3.collidepoint(pos):
+        char.image = "tanksvoi3"
+        mode = 'game'
+    elif mode == 'menu_game' and type4.collidepoint(pos):
+        char.image = "tanksvoi4"
+        mode = 'game'
+    elif mode == 'menu_game' and type5.collidepoint(pos):
+        char.image = "tanksvoi5"
+        mode = 'game'
+    elif mode == "game" and knopka10.collidepoint(pos):
+        mode = 'menu'
+    
+    
+    # лвл 2
+    if mode == 'menu_game_2' and type1.collidepoint(pos):
+        char.image = "tanksvoi"
+        mode = 'level_2'
+    elif mode == 'menu_game_2' and type2.collidepoint(pos):
+        char.image = "tanksvoi2"
+        mode = 'level_2'
+    elif mode == 'menu_game_2' and type3.collidepoint(pos):
+        char.image = "tanksvoi3"
+        mode = 'level_2'
+    elif mode == 'menu_game_2' and type4.collidepoint(pos):
+        char.image = "tanksvoi4"
+        mode = 'level_2'
+    elif mode == 'menu_game_2' and type5.collidepoint(pos):
+        char.image = "tanksvoi5"
+        mode = 'level_2'
+    elif mode == "level_2" and knopka10.collidepoint(pos):
+        mode = 'menu'
+    
+    # лвл 3
+    if mode == 'menu_game_3' and type1.collidepoint(pos):
+        char.image = "tanksvoi"
+        mode = 'level_3'
+    elif mode == 'menu_game_3' and type2.collidepoint(pos):
+        char.image = "tanksvoi2"
+        mode = 'level_3'
+    elif mode == 'menu_game_3' and type3.collidepoint(pos):
+        char.image = "tanksvoi3"
+        mode = 'level_3'
+    elif mode == 'menu_game_3' and type4.collidepoint(pos):
+        char.image = "tanksvoi4"
+        mode = 'level_3'
+    elif mode == 'menu_game_3' and type5.collidepoint(pos):
+        char.image = "tanksvoi5"
+        mode = 'level_3'
+    elif mode == "level_3" and knopka10.collidepoint(pos):
+        mode = 'menu'
+    
+    # НАСТРОЙКА КНОПОК общее
+    elif mode == "menu" and knopka.collidepoint(pos):
+        mode = 'menu_rexim'
+    elif mode == "menu_rexim" and knopka6.collidepoint(pos):
+        mode = 'menu_game'
+    elif mode == "menu_rexim" and knopka7.collidepoint(pos):
+        mode = 'menu_game_2'
+    elif mode == "menu_rexim" and knopka8.collidepoint(pos):
+        mode = 'menu_game_3'
+    elif mode == "menu_rexim" and knopka9.collidepoint(pos):
+        mode = 'menu'
+    elif mode == "menu" and knopka2.collidepoint(pos):
+        mode = 'gallery'
+    elif mode == "gallery" and knopka3.collidepoint(pos):
+        mode = 'menu'
+    elif mode == "menu" and knopka11.collidepoint(pos):
+        mode = 'menu_pomosh'
+    elif mode == "menu_pomosh" and knopka12.collidepoint(pos):
+        mode = 'menu'
+    #Стрельба лвл 1
+    
+    elif mode == 'game' and button == mouse.LEFT:
+        bullet = Actor("pula")
+        bullet.pos = char.pos
+        bullets.append(bullet)
+    elif mode == 'game' and button == mouse.RIGHT:
+        bullet = Actor("пули")
+        bullet.pos = char.pos
+        bullets.append(bullet)
+        bullet.pos = char.pos
+        
+     #Стрельба лвл 2   
+    elif mode == 'level_2' and button == mouse.LEFT:
+        bullet = Actor("pula")
+        bullet.pos = char.pos
+        bullets.append(bullet)
+    elif mode == 'level_2' and button == mouse.RIGHT:
+        bullet = Actor("pula2")
+        bullet.pos = char.pos
+        bullets.append(bullet)
+        bullet.pos = char.pos
+    
+         #Стрельба лвл 3  
+    elif mode == 'level_3' and button == mouse.LEFT:
+        bullet = Actor("pula")
+        bullet.pos = char.pos
+        bullets.append(bullet)
+    elif mode == 'level_3' and button == mouse.RIGHT:
+        bullet = Actor("pula2")
+        bullet.pos = char.pos
+        bullets.append(bullet)
+        bullet.pos = char.pos
+        
+        
+        
+        #добавление в список
+        bullets.append(bullet)
+
+    
